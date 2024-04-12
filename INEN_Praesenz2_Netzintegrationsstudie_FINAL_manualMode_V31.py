@@ -153,7 +153,7 @@ eng = matlab.engine.start_matlab()
 # Calls ini_PVArrayGridAverageModel_new_sim.m
 eng.ini_PVArrayGridAverageModel_new_sim(nargout = 0)
 
-# Use eval to obtain value of activePower1 in Matlab
+# Obtain value of activePower in Matlab
 activePowerData = scipy.io.loadmat('activePowerData.mat')
 activePowerDataArray = activePowerData['activePower']
 
@@ -161,7 +161,7 @@ for element in activePowerDataArray:
     for array in element:
         subarray = array[0]
         value = subarray[0]
-        print("This is ", value)
+        print("Active power is \n", value)
         activepower_int = int(value)/1000
         activePowerDataArray_int.append(activepower_int)
 # out = eng.eval('activePower1')
@@ -171,14 +171,17 @@ for element in activePowerDataArray:
 # print("有功功率为： "+str(out))
 
 # Left feeder
-net.sgen.loc[net.sgen.bus == 3, 'p_mw'] = activePowerDataArray_int[0] # PV @ bus_index 3
+#net.sgen.loc[net.sgen.bus == 3, 'p_mw'] = activePowerDataArray_int[0] # PV @ bus_index 3
+net.sgen.loc[net.sgen.bus == 3, 'p_mw'] = 0.065 # PV @ bus_index 3
 net.sgen.loc[net.sgen.bus == 3, 'q_mvar'] = Q_TO_P_RATIO * net.sgen.loc[net.sgen.bus == 3, 'p_mw']
-print("Active Power is "+str(activePowerDataArray_int[0]) + "Reactive Power is " + str(net.sgen.loc[net.sgen.bus == 3, 'q_mvar']))
+print("Active Power is "+str(net.sgen.loc[net.sgen.bus == 3, 'p_mw']) + "\t Reactive Power is " + str(net.sgen.loc[net.sgen.bus == 3, 'q_mvar']))
 
 # middle feeder from start to end
-net.sgen.loc[net.sgen.bus == 8, 'p_mw'] = activePowerDataArray_int[1]  # PV @ bus_index 8
+#net.sgen.loc[net.sgen.bus == 8, 'p_mw'] = activePowerDataArray_int[1]  # PV @ bus_index 8
+net.sgen.loc[net.sgen.bus == 8, 'p_mw'] = 0.065  # PV @ bus_index 8
 net.sgen.loc[net.sgen.bus == 8, 'q_mvar'] = Q_TO_P_RATIO * net.sgen.loc[net.sgen.bus == 8, 'p_mw']
-net.sgen.loc[net.sgen.bus == 9, 'p_mw'] = activePowerDataArray_int[2]  # PV @ bus_index 9
+#net.sgen.loc[net.sgen.bus == 9, 'p_mw'] = activePowerDataArray_int[2]  # PV @ bus_index 9
+net.sgen.loc[net.sgen.bus == 9, 'p_mw'] = 0.055  # PV @ bus_index 8
 net.sgen.loc[net.sgen.bus == 9, 'q_mvar'] = Q_TO_P_RATIO * net.sgen.loc[net.sgen.bus == 9, 'p_mw']
 net.sgen.loc[net.sgen.bus == 10, 'p_mw'] = 0.055  # PV @ bus_index 10
 net.sgen.loc[net.sgen.bus == 10, 'q_mvar'] = Q_TO_P_RATIO * net.sgen.loc[net.sgen.bus == 10, 'p_mw']
